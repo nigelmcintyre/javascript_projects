@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+
+  function playSound(e){
+    //once key is pressed event "e" passed into the function with the keycode
+    //"data-" attribute is used for custom data, in this case keycode. A template
+    //literal is needed to pass in the "e.keycode" expression to the custom data attribute
+    //without the tamplate literal would look like eg. 'audio[data-key="65"]'
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"`);
+    //could also querySelect(div)
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`) 
+    if(!audio) return; //if any key other than a-l is pressed, exit function.
+    audio.currentTime = 0; //rewinds media to the start
+    audio.play();
+    //for the animation we need to add html content programatically
+    key.classList.add('playing'); // playing is a class in the style.css file.
+  }
+
+  function removeTransition(e){
+    if(e.propertyName !== "transform") return; //skip it if it's not a transform.
+    this.classList.remove('playing');
+  }
+
+  
+  //transition is an event similar to cick or keydown to remove the transition
+  //"yellow border,scaleing up", transition end event needs to be listened for
+  const keys = document.querySelectorAll('.key')
+  //listen for transitionend event on every key in array and call removeTransition function
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+  window.addEventListener('keydown', playSound);
+  
+</script>
+
+
+</body>
+</html>
